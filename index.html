@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestione Esami di Guida - ABA Autoscuole</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #0066cc;
+            --primary-hover: #0052a3;
+            --success: #00a651;
+            --warning: #ff9500;
+            --danger: #ff3b30;
+            --background: #f5f5f7;
+            --surface: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --text-tertiary: #86868b;
+            --border: #d2d2d7;
+            --border-light: #e5e5ea;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-light);
+            margin: -24px -24px 32px;
+            padding: 24px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 8px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .logo-text {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .logo-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-large {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Config Panel */
+        .config-section {
+            margin-bottom: 32px;
+        }
+
+        .config-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .available-days {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .day-chip {
+            padding: 6px 12px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .day-chip:hover {
+            background: var(--border-light);
+        }
+
+        .day-chip .remove {
+            width: 16px;
+            height: 16px;
+            background: var(--text-tertiary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .day-chip .remove:hover {
+            background: var(--danger);
+        }
+
+        .date-picker-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Calendar */
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .month-year {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            padding: 8px 0;
+            text-transform: uppercase;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: transparent;
+        }
+
+        .day.unavailable {
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                var(--border-light) 10px,
+                var(--border-light) 20px
+            );
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .day.available {
+            background: var(--background);
+            border: 1px solid var(--border);
+        }
+
+        .day.available:hover {
+            background: var(--border-light);
+        }
+
+        .day.selected {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        .day.today {
+            border: 2px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .day.has-students {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .day.almost-full {
+            background: var(--warning);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        .day.full {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .student-count {
+            position: absolute;
+            bottom: 2px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* Management Panel */
+        .date-display {
+            background: var(--background);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 24px;
+        }
+
+        .date-display-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .date-display-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .slots-bar {
+            display: flex;
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .slot-indicator {
+            flex: 1;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .slot-indicator.filled {
+            background: var(--success);
+        }
+
+        /* Student Form */
+        .add-form {
+            background: var(--background);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Student List */
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--background);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .student-item:hover {
+            background: var(--border-light);
+        }
+
+        .student-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .student-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-tertiary);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-warning {
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 24px;
+            color: var(--text-tertiary);
+            font-size: 12px;
+            margin-top: 48px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header {
+                margin: -16px -16px 24px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+                text-align: center;
+            }
+
+            h1 {
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 8px;
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .management-panel {
+                order: -1;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-text">ABA</span>
+                <span class="logo-subtitle">AUTOSCUOLE</span>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <h1>Gestione Esami di Guida</h1>
+                <div style="font-size: 13px; color: #86868b; font-style: italic; margin-top: 4px;">
+                    Applicazione dedicata con ❤️ ad Andrea per la gestione comoda degli esami di guida
+                </div>
+            </div>
+            <button class="btn btn-whatsapp" onclick="inviaInUfficio()" style="background: #25D366; color: white; padding: 16px 32px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); border: none;">
+                <svg style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;" fill="white" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.123-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                INVIA IN UFFICIO
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-grid">
+            <!-- Calendar Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Calendario Esami</span>
+                    <button class="btn btn-danger" onclick="openConfigModal()" style="font-weight: 700; font-size: 16px; padding: 14px 32px; box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3); text-transform: uppercase; background: #ff3b30;">
+                        📅 GIORNI ESAMI GUIDA
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="calendar-nav">
+                        <button class="btn btn-icon btn-secondary" onclick="changeMonth(-1)">‹</button>
+                        <div class="month-year" id="monthYear"></div>
+                        <button class="btn btn-icon btn-secondary" onclick="changeMonth(1)">›</button>
+                    </div>
+                    <div class="calendar-grid" id="calendar">
+                        <div class="weekday">Dom</div>
+                        <div class="weekday">Lun</div>
+                        <div class="weekday">Mar</div>
+                        <div class="weekday">Mer</div>
+                        <div class="weekday">Gio</div>
+                        <div class="weekday">Ven</div>
+                        <div class="weekday">Sab</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Panel -->
+            <div class="card management-panel">
+                <div class="card-header">
+                    Gestione Allievi
+                </div>
+                <div class="card-body" id="managementContent">
+                    <div class="empty-state">
+                        <div class="empty-icon">📅</div>
+                        <div class="empty-title">Seleziona una data</div>
+                        <div class="empty-text">Clicca su un giorno disponibile nel calendario</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Config Modal -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                📅 Giorni Esami Guida - Configurazione
+            </div>
+            <div class="modal-body">
+                <div class="config-section">
+                    <div class="config-title">Giorni Esame Disponibili</div>
+                    <div class="available-days" id="availableDaysList"></div>
+                    <div class="date-picker-group">
+                        <input type="date" id="newAvailableDate" class="form-input">
+                        <button class="btn btn-primary" onclick="addAvailableDay()">Aggiungi</button>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    ℹ️ Solo i giorni configurati qui saranno selezionabili per inserire gli allievi
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfigModal()">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Move Student Modal -->
+    <div id="moveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                📅 Sposta Allievi
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Seleziona nuova data</label>
+                    <select id="newDateSelect" class="form-input"></select>
+                </div>
+                <div id="moveWarning"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeMoveModal()">Annulla</button>
+                <button class="btn btn-primary" onclick="confirmMove()">Conferma</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div style="font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px;">
+            © 2025 ABA Autoscuole - Software artigianale italiano 🇮🇹
+        </div>
+        <div style="font-size: 12px; color: var(--text-tertiary); line-height: 1.6;">
+            Realizzato con tanto caffè ☕ e qualche parolaccia quando il codice non funzionava<br>
+            Se trovi un bug, è una feature non documentata • Se funziona al primo colpo, diffida<br>
+            <span style="color: var(--danger);">⚠️</span> ATTENZIONE: Questo software crea dipendenza da organizzazione<br>
+            <span style="font-style: italic;">P.S. Andrea, ricordati che il vero esame è far quadrare tutti gli allievi nel calendario!</span><br>
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light);">
+                <span style="font-size: 11px;">La copia di questo software è vietata, ma se proprio devi... almeno offri una birra 🍺</span><br>
+                <span style="font-size: 11px;">Made with ❤️ and a lot of CTRL+Z</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentDate = new Date();
+        let selectedDate = null;
+        let students = JSON.parse(localStorage.getItem('drivingExamStudents')) || {};
+        let availableDays = JSON.parse(localStorage.getItem('availableExamDays')) || {};
+        let editingIndex = null;
+        let movingStudents = null;
+        let movingSingleIndex = null;
+
+        const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+                          'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+
+        // Initialize
+        function init() {
+            renderCalendar();
+            renderAvailableDays();
+        }
+
+        // Calendar
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            document.getElementById('monthYear').textContent = 
+                `${monthNames[month]} ${year}`;
+            
+            // Clear and rebuild calendar grid
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            
+            // Add weekdays
+            const weekdays = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+            weekdays.forEach(day => {
+                const weekdayDiv = document.createElement('div');
+                weekdayDiv.className = 'weekday';
+                weekdayDiv.textContent = day;
+                calendar.appendChild(weekdayDiv);
+            });
+            
+            // Empty days before month start
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'day disabled';
+                calendar.appendChild(emptyDiv);
+            }
+            
+            // Month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateStr = getDateString(date);
+                const studentCount = students[dateStr]?.length || 0;
+                const isToday = date.toDateString() === today.toDateString();
+                const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
+                const isAvailable = availableDays[dateStr] === true;
+                
+                const dayDiv = document.createElement('div');
+                let dayClass = 'day';
+                
+                if (!isAvailable) {
+                    dayClass += ' unavailable';
+                } else {
+                    dayClass += ' available';
+                    if (isToday) dayClass += ' today';
+                    if (isSelected) dayClass += ' selected';
+                    if (studentCount > 0 && !isSelected) {
+                        if (studentCount >= 6) {
+                            dayClass += ' full';
+                        } else if (studentCount >= 4) {
+                            dayClass += ' almost-full';
+                        } else {
+                            dayClass += ' has-students';
+                        }
+                    }
+                }
+                
+                dayDiv.className = dayClass;
+                if (isAvailable) {
+                    dayDiv.onclick = () => selectDate(year, month, day);
+                }
+                
+                dayDiv.innerHTML = `
+                    <div>${day}</div>
+                    ${studentCount > 0 && isAvailable ? 
+                      `<div class="student-count">${studentCount}/6</div>` : ''}
+                `;
+                
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        // Select date
+        function selectDate(year, month, day) {
+            selectedDate = new Date(year, month, day, 12, 0, 0);
+            renderCalendar();
+            renderManagementPanel();
+        }
+
+        // Management Panel
+        function renderManagementPanel() {
+            if (!selectedDate) {
+                document.getElementById('managementContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📅</div>
+                        <div class="empty-title">Seleziona una data</div>
+                        <div class="empty-text">Clicca su un giorno disponibile nel calendario</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const dateStr = getDateString(selectedDate);
+            const dayStudents = students[dateStr] || [];
+            const slotsRemaining = 6 - dayStudents.length;
+            
+            let html = `
+                <div class="date-display">
+                    <div class="date-display-title">Data Selezionata</div>
+                    <div class="date-display-value">
+                        ${selectedDate.toLocaleDateString('it-IT', {
+                            weekday: 'long',
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        })}
+                    </div>
+                    <div class="slots-bar">
+                        ${Array(6).fill(0).map((_, i) => 
+                            `<div class="slot-indicator ${i < dayStudents.length ? 'filled' : ''}"></div>`
+                        ).join('')}
+                    </div>
+                    <div style="margin-top: 12px; font-size: 13px; color: ${slotsRemaining === 0 ? 'var(--danger)' : 'var(--success)'};">
+                        ${slotsRemaining === 0 ? 
+                          '⚠️ Seduta completa' : 
+                          `✅ ${slotsRemaining} ${slotsRemaining === 1 ? 'posto disponibile' : 'posti disponibili'}`}
+                    </div>
+                </div>
+            `;
+
+            if (dayStudents.length > 0) {
+                html += `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+                        <button class="btn btn-secondary" onclick="moveAllStudents()">
+                            📅 Sposta tutti
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteAllStudents()">
+                            🗑️ Elimina tutti
+                        </button>
+                    </div>
+                `;
+            }
+
+            if (slotsRemaining > 0) {
+                html += `
+                    <div class="add-form">
+                        <div class="form-group">
+                            <label class="form-label">Nome e Cognome</label>
+                            <input type="text" id="studentName" class="form-input" 
+                                   placeholder="Es: Mario Rossi" 
+                                   onkeypress="if(event.key === 'Enter') addStudent()">
+                        </div>
+                        <button class="btn btn-primary" onclick="addStudent()" style="width: 100%;">
+                            ${editingIndex !== null ? 'Salva Modifiche' : '➕ Aggiungi Allievo'}
+                        </button>
+                        ${editingIndex !== null ? 
+                          `<button class="btn btn-secondary" onclick="cancelEdit()" style="width: 100%; margin-top: 8px;">Annulla</button>` : ''}
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="alert alert-danger">
+                        ⚠️ Questa seduta ha raggiunto il limite massimo di 6 allievi
+                    </div>
+                `;
+            }
+
+            if (dayStudents.length > 0) {
+                html += '<div class="student-list">';
+                dayStudents.forEach((student, index) => {
+                    html += `
+                        <div class="student-item">
+                            <div class="student-number">${index + 1}</div>
+                            <div class="student-name">${student.name}</div>
+                            <div class="student-actions">
+                                <button class="btn btn-icon btn-secondary" onclick="moveStudent(${index})" title="Sposta">📅</button>
+                                <button class="btn btn-icon btn-secondary" onclick="editStudent(${index})" title="Modifica">✏️</button>
+                                <button class="btn btn-icon btn-secondary" onclick="deleteStudent(${index})" title="Elimina">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            document.getElementById('managementContent').innerHTML = html;
+            
+            if (editingIndex !== null) {
+                const student = dayStudents[editingIndex];
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('studentName').focus();
+            }
+        }
+
+        // Add student
+        function addStudent() {
+            const nameInput = document.getElementById('studentName');
+            
+            if (!nameInput || !nameInput.value.trim()) {
+                alert('Inserisci il nome dell\'allievo');
+                return;
+            }
+            
+            const dateStr = getDateString(selectedDate);
+            if (!students[dateStr]) {
+                students[dateStr] = [];
+            }
+            
+            if (editingIndex !== null) {
+                students[dateStr][editingIndex] = {
+                    name: nameInput.value.trim(),
+                    addedAt: students[dateStr][editingIndex].addedAt
+                };
+                editingIndex = null;
+            } else {
+                if (students[dateStr].length >= 6) {
+                    alert('Questa seduta ha già raggiunto il limite massimo di 6 allievi');
+                    return;
+                }
+                
+                students[dateStr].push({
+                    name: nameInput.value.trim(),
+                    addedAt: new Date().toISOString()
+                });
+            }
+            
+            saveData();
+            renderCalendar();
+            renderManagementPanel();
+        }
+
+        // Edit student
+        function editStudent(index) {
+            editingIndex = index;
+            renderManagementPanel();
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            editingIndex = null;
+            renderManagementPanel();
+        }
+
+        // Delete student
+        function deleteStudent(index) {
+            if (confirm('Rimuovere questo allievo dalla seduta?')) {
+                const dateStr = getDateString(selectedDate);
+                students[dateStr].splice(index, 1);
+                
+                if (students[dateStr].length === 0) {
+                    delete students[dateStr];
+                }
+                
+                saveData();
+                renderCalendar();
+                renderManagementPanel();
+            }
+        }
+
+        // Delete all students
+        function deleteAllStudents() {
+            const dateStr = getDateString(selectedDate);
+            const count = students[dateStr]?.length || 0;
+            
+            if (count === 0) return;
+            
+            if (confirm(`Eliminare tutti i ${count} allievi da questa data?`)) {
+                delete students[dateStr];
+                saveData();
+                renderCalendar();
+                renderManagementPanel();
+            }
+        }
+
+        // Move student
+        function moveStudent(index) {
+            const dateStr = getDateString(selectedDate);
+            movingStudents = [students[dateStr][index]];
+            movingSingleIndex = index;
+            showMoveModal();
+        }
+
+        // Move all students
+        function moveAllStudents() {
+            const dateStr = getDateString(selectedDate);
+            movingStudents = students[dateStr] || [];
+            movingSingleIndex = null;
+            showMoveModal();
+        }
+
+        // Show move modal
+        function showMoveModal() {
+            const selectElement = document.getElementById('newDateSelect');
+            selectElement.innerHTML = '<option value="">Seleziona una data...</option>';
+            
+            // Get available days for selection
+            const sortedDates = Object.keys(availableDays)
+                .filter(dateStr => {
+                    const targetStudents = students[dateStr]?.length || 0;
+                    return availableDays[dateStr] && (targetStudents + movingStudents.length <= 6);
+                })
+                .sort();
+            
+            sortedDates.forEach(dateStr => {
+                const date = new Date(dateStr + 'T12:00:00');
+                const targetStudents = students[dateStr]?.length || 0;
+                const slotsAvailable = 6 - targetStudents;
+                
+                const option = document.createElement('option');
+                option.value = dateStr;
+                option.textContent = `${date.toLocaleDateString('it-IT', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                })} (${slotsAvailable} posti liberi)`;
+                selectElement.appendChild(option);
+            });
+            
+            document.getElementById('moveModal').classList.add('active');
+        }
+
+        // Close move modal
+        function closeMoveModal() {
+            document.getElementById('moveModal').classList.remove('active');
+            movingStudents = null;
+            movingSingleIndex = null;
+        }
+
+        // Confirm move
+        function confirmMove() {
+            const newDateStr = document.getElementById('newDateSelect').value;
+            
+            if (!newDateStr) {
+                alert('Seleziona una data di destinazione');
+                return;
+            }
+            
+            const oldDateStr = getDateString(selectedDate);
+            
+            if (oldDateStr === newDateStr) {
+                alert('La data di destinazione è la stessa di quella attuale');
+                return;
+            }
+            
+            // Move students
+            if (!students[newDateStr]) {
+                students[newDateStr] = [];
+            }
+            
+            students[newDateStr].push(...movingStudents);
+            
+            // Remove from old date
+            if (movingSingleIndex !== null) {
+                students[oldDateStr].splice(movingSingleIndex, 1);
+                if (students[oldDateStr].length === 0) {
+                    delete students[oldDateStr];
+                }
+            } else {
+                delete students[oldDateStr];
+            }
+            
+            saveData();
+            
+            // Update selected date
+            const [year, month, day] = newDateStr.split('-').map(Number);
+            selectedDate = new Date(year, month - 1, day, 12, 0, 0);
+            currentDate = new Date(year, month - 1, day, 12, 0, 0);
+            
+            renderCalendar();
+            renderManagementPanel();
+            closeMoveModal();
+            
+            alert(`✅ ${movingStudents.length} ${movingStudents.length === 1 ? 'allievo spostato' : 'allievi spostati'} con successo`);
+        }
+
+        // Config modal
+        function openConfigModal() {
+            renderAvailableDays();
+            document.getElementById('configModal').classList.add('active');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.remove('active');
+        }
+
+        // Add available day
+        function addAvailableDay() {
+            const input = document.getElementById('newAvailableDate');
+            if (!input.value) {
+                alert('Seleziona una data');
+                return;
+            }
+            
+            availableDays[input.value] = true;
+            saveAvailableDays();
+            renderAvailableDays();
+            renderCalendar();
+            input.value = '';
+        }
+
+        // Remove available day
+        function removeAvailableDay(dateStr) {
+            if (students[dateStr]?.length > 0) {
+                if (!confirm(`Questa data ha ${students[dateStr].length} allievi. Rimuoverla comunque?`)) {
+                    return;
+                }
+                delete students[dateStr];
+                saveData();
+            }
+            
+            delete availableDays[dateStr];
+            saveAvailableDays();
+            renderAvailableDays();
+            renderCalendar();
+        }
+
+        // Render available days
+        function renderAvailableDays() {
+            const container = document.getElementById('availableDaysList');
+            const sortedDates = Object.keys(availableDays).sort();
+            
+            if (sortedDates.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-tertiary); font-size: 14px;">Nessun giorno configurato</div>';
+                return;
+            }
+            
+            container.innerHTML = sortedDates.map(dateStr => {
+                const date = new Date(dateStr + 'T12:00:00');
+                const studentCount = students[dateStr]?.length || 0;
+                return `
+                    <div class="day-chip">
+                        <span>${date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        ${studentCount > 0 ? `<span style="color: var(--primary);">(${studentCount})</span>` : ''}
+                        <span class="remove" onclick="removeAvailableDay('${dateStr}')">×</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Send report
+        function inviaInUfficio() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthName = `${monthNames[month]} ${year}`;
+            
+            // Collect month data
+            const monthData = {};
+            let totalStudents = 0;
+            
+            Object.keys(students).forEach(dateStr => {
+                const date = new Date(dateStr + 'T12:00:00');
+                if (date.getFullYear() === year && date.getMonth() === month) {
+                    monthData[dateStr] = students[dateStr];
+                    totalStudents += students[dateStr].length;
+                }
+            });
+            
+            const sortedDates = Object.keys(monthData).sort();
+            
+            // Prepare message
+            let message = `GESTIONE ESAMI DI GUIDA\n`;
+            message += `Mese: ${monthName}\n`;
+            message += `================================\n\n`;
+            
+            if (sortedDates.length === 0) {
+                message += `Nessun esame programmato per questo mese\n`;
+            } else {
+                message += `RIEPILOGO MENSILE\n`;
+                message += `• Totale Allievi: ${totalStudents}\n`;
+                message += `• Giorni d'esame: ${sortedDates.length}\n\n`;
+                
+                message += `DETTAGLIO GIORNATE\n`;
+                message += `================================\n`;
+                
+                sortedDates.forEach(dateStr => {
+                    const date = new Date(dateStr + 'T12:00:00');
+                    const dayStudents = monthData[dateStr];
+                    const dayName = date.toLocaleDateString('it-IT', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long'
+                    });
+                    
+                    message += `\n${dayName} (${dayStudents.length}/6 posti)\n`;
+                    
+                    dayStudents.forEach((student, index) => {
+                        message += `${index + 1}. ${student.name}\n`;
+                    });
+                });
+                
+                message += `\n================================\n`;
+            }
+            
+            // WhatsApp
+            const phoneNumber = '390424523690';
+            const encodedMessage = encodeURIComponent(message);
+            
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = `whatsapp://send?phone=${phoneNumber}&text=${encodedMessage}`;
+            } else {
+                window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            }
+        }
+
+        // Utilities
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function getDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function saveData() {
+            localStorage.setItem('drivingExamStudents', JSON.stringify(students));
+        }
+
+        function saveAvailableDays() {
+            localStorage.setItem('availableExamDays', JSON.stringify(availableDays));
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
