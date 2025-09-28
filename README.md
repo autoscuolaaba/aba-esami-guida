@@ -160,5 +160,3 @@ Se funziona in queste condizioni, funzionerà anche per te.
 ---
 
 *P.S. Se stai leggendo fino a qui, probabilmente sei un developer. In tal caso: sì, tutto il CSS è inline, sì, non c'è un build process, sì, jQuery non serve. E sai cosa? Funziona benissimo così. A volte la semplicità vince.*
-
-*P.P.S. Per Andrea: ricordati di fare il backup dei dati ogni tanto. Lo screenshot del calendario conta come backup.*
