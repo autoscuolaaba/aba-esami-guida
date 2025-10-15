@@ -226,14 +226,14 @@
         }
 
         .day-chip {
-            padding: 6px 12px;
+            padding: 8px 12px;
             background: var(--background);
             border: 1px solid var(--border);
             border-radius: 20px;
             font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -716,12 +716,26 @@
                 <div class="config-section">
                     <div class="config-title">Giorni Esame Disponibili</div>
                     <div class="available-days" id="availableDaysList"></div>
-                    <div class="date-picker-group">
-                        <input type="date" id="newAvailableDate" class="form-input">
-                        <button class="btn btn-primary" onclick="addAvailableDay()">Aggiungi</button>
+                    <div style="margin-top: 16px;">
+                        <div style="display: grid; grid-template-columns: 1fr 0.8fr; gap: 12px; margin-bottom: 12px;">
+                            <div>
+                                <label class="form-label" style="margin-bottom: 6px; display: block;">Data Esame</label>
+                                <input type="date" id="newAvailableDate" class="form-input" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label class="form-label" style="margin-bottom: 6px; display: block;">Orario</label>
+                                <select id="examTime" class="form-input" style="width: 100%;">
+                                    <option value="mattina">🌅 Mattina</option>
+                                    <option value="pomeriggio">🌆 Pomeriggio</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="addAvailableDay()" style="width: 100%; padding: 12px;">
+                            ➕ Aggiungi Giorno Esame
+                        </button>
                     </div>
                 </div>
-                <div class="alert alert-warning">
+                <div class="alert alert-warning" style="margin-top: 20px;">
                     ℹ️ Solo i giorni configurati qui saranno selezionabili per inserire gli allievi
                 </div>
             </div>
@@ -824,7 +838,8 @@
                 const studentCount = students[dateStr]?.length || 0;
                 const isToday = date.toDateString() === today.toDateString();
                 const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
-                const isAvailable = availableDays[dateStr] === true;
+                const dayConfig = availableDays[dateStr];
+                const isAvailable = dayConfig && (dayConfig === true || dayConfig.enabled === true);
                 
                 const dayDiv = document.createElement('div');
                 let dayClass = 'day';
@@ -851,8 +866,12 @@
                     dayDiv.onclick = () => selectDate(year, month, day);
                 }
                 
+                const timeIcon = dayConfig && dayConfig.time ? 
+                    (dayConfig.time === 'mattina' ? '🌅' : '🌆') : '';
+                
                 dayDiv.innerHTML = `
                     <div>${day}</div>
+                    ${isAvailable && timeIcon ? `<div style="font-size: 10px; margin: 2px 0;">${timeIcon}</div>` : ''}
                     ${studentCount > 0 && isAvailable ? 
                       `<div class="student-count">${studentCount}/6</div>` : ''}
                 `;
@@ -884,6 +903,9 @@
             const dateStr = getDateString(selectedDate);
             const dayStudents = students[dateStr] || [];
             const slotsRemaining = 6 - dayStudents.length;
+            const dayConfig = availableDays[dateStr];
+            const timeLabel = dayConfig && dayConfig.time ? 
+                (dayConfig.time === 'mattina' ? '🌅 Mattina' : '🌆 Pomeriggio') : '';
             
             let html = `
                 <div class="date-display">
@@ -895,6 +917,7 @@
                             month: 'long',
                             year: 'numeric'
                         })}
+                        ${timeLabel ? `<span style="margin-left: 12px; padding: 4px 12px; background: var(--background); border-radius: 20px; font-size: 14px; font-weight: 500; color: var(--primary);">${timeLabel}</span>` : ''}
                     </div>
                     <div class="slots-bar">
                         ${Array(6).fill(0).map((_, i) => 
@@ -1077,8 +1100,10 @@
             // Get available days for selection
             const sortedDates = Object.keys(availableDays)
                 .filter(dateStr => {
+                    const dayConfig = availableDays[dateStr];
+                    const isEnabled = dayConfig && (dayConfig === true || dayConfig.enabled === true);
                     const targetStudents = students[dateStr]?.length || 0;
-                    return availableDays[dateStr] && (targetStudents + movingStudents.length <= 6);
+                    return isEnabled && (targetStudents + movingStudents.length <= 6);
                 })
                 .sort();
             
@@ -1086,6 +1111,9 @@
                 const date = new Date(dateStr + 'T12:00:00');
                 const targetStudents = students[dateStr]?.length || 0;
                 const slotsAvailable = 6 - targetStudents;
+                const dayConfig = availableDays[dateStr];
+                const timeLabel = dayConfig && dayConfig.time ? 
+                    (dayConfig.time === 'mattina' ? '🌅 Mattina' : '🌆 Pomeriggio') : '';
                 
                 const option = document.createElement('option');
                 option.value = dateStr;
@@ -1093,7 +1121,7 @@
                     weekday: 'long',
                     day: 'numeric',
                     month: 'long'
-                })} (${slotsAvailable} posti liberi)`;
+                })}${timeLabel ? ` - ${timeLabel}` : ''} (${slotsAvailable} posti liberi)`;
                 selectElement.appendChild(option);
             });
             
@@ -1167,16 +1195,21 @@
         // Add available day
         function addAvailableDay() {
             const input = document.getElementById('newAvailableDate');
+            const timeSelect = document.getElementById('examTime');
             if (!input.value) {
                 alert('Seleziona una data');
                 return;
             }
             
-            availableDays[input.value] = true;
+            availableDays[input.value] = {
+                enabled: true,
+                time: timeSelect.value
+            };
             saveAvailableDays();
             renderAvailableDays();
             renderCalendar();
             input.value = '';
+            timeSelect.value = 'mattina';
         }
 
         // Remove available day
@@ -1208,10 +1241,15 @@
             container.innerHTML = sortedDates.map(dateStr => {
                 const date = new Date(dateStr + 'T12:00:00');
                 const studentCount = students[dateStr]?.length || 0;
+                const dayConfig = availableDays[dateStr];
+                const timeLabel = dayConfig && dayConfig.time ? 
+                    (dayConfig.time === 'mattina' ? '🌅 Mattina' : '🌆 Pomeriggio') : '';
+                
                 return `
                     <div class="day-chip">
                         <span>${date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                        ${studentCount > 0 ? `<span style="color: var(--primary);">(${studentCount})</span>` : ''}
+                        ${timeLabel ? `<span style="color: var(--primary); font-weight: 600;">${timeLabel}</span>` : ''}
+                        ${studentCount > 0 ? `<span style="color: var(--success);">(${studentCount})</span>` : ''}
                         <span class="remove" onclick="removeAvailableDay('${dateStr}')">×</span>
                     </div>
                 `;
@@ -1256,13 +1294,17 @@
                 sortedDates.forEach(dateStr => {
                     const date = new Date(dateStr + 'T12:00:00');
                     const dayStudents = monthData[dateStr];
+                    const dayConfig = availableDays[dateStr];
+                    const timeLabel = dayConfig && dayConfig.time ? 
+                        (dayConfig.time === 'mattina' ? 'MATTINA' : 'POMERIGGIO') : '';
+                    
                     const dayName = date.toLocaleDateString('it-IT', {
                         weekday: 'long',
                         day: 'numeric',
                         month: 'long'
                     });
                     
-                    message += `\n${dayName} (${dayStudents.length}/6 posti)\n`;
+                    message += `\n${dayName}${timeLabel ? ` - ${timeLabel}` : ''} (${dayStudents.length}/6 posti)\n`;
                     
                     dayStudents.forEach((student, index) => {
                         message += `${index + 1}. ${student.name}\n`;
