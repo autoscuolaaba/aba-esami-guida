@@ -537,6 +537,12 @@
             color: var(--danger);
             border: 1px solid rgba(255, 59, 48, 0.2);
         }
+        
+        .alert-info {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+        }
 
         /* Modal */
         .modal {
@@ -764,6 +770,24 @@
             </div>
         </div>
     </div>
+    
+    <!-- Select Student to Move Modal -->
+    <div id="selectStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                📋 Seleziona allievo da spostare
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info" style="margin-bottom: 16px;">
+                    💡 Seleziona un allievo da spostare in un'altra data per liberare un posto
+                </div>
+                <div id="studentSelectList" style="max-height: 300px; overflow-y: auto;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSelectStudentModal()">Annulla</button>
+            </div>
+        </div>
+    </div>
 
     <div class="footer">
         <div style="font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px;">
@@ -790,7 +814,9 @@
         let editingIndex = null;
         let movingStudents = null;
         let movingSingleIndex = null;
+        let pendingStudentName = null; // Per memorizzare il nome quando la seduta è piena
 
+        const MAX_STUDENTS = 8; // Aumentato da 6 a 8
         const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
                           'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
 
@@ -851,9 +877,9 @@
                     if (isToday) dayClass += ' today';
                     if (isSelected) dayClass += ' selected';
                     if (studentCount > 0 && !isSelected) {
-                        if (studentCount >= 6) {
+                        if (studentCount >= MAX_STUDENTS) {
                             dayClass += ' full';
-                        } else if (studentCount >= 4) {
+                        } else if (studentCount >= MAX_STUDENTS - 2) {
                             dayClass += ' almost-full';
                         } else {
                             dayClass += ' has-students';
@@ -873,7 +899,7 @@
                     <div>${day}</div>
                     ${isAvailable && timeIcon ? `<div style="font-size: 10px; margin: 2px 0;">${timeIcon}</div>` : ''}
                     ${studentCount > 0 && isAvailable ? 
-                      `<div class="student-count">${studentCount}/6</div>` : ''}
+                      `<div class="student-count">${studentCount}/${MAX_STUDENTS}</div>` : ''}
                 `;
                 
                 calendar.appendChild(dayDiv);
@@ -883,6 +909,7 @@
         // Select date
         function selectDate(year, month, day) {
             selectedDate = new Date(year, month, day, 12, 0, 0);
+            pendingStudentName = null; // Reset pending student
             renderCalendar();
             renderManagementPanel();
         }
@@ -902,7 +929,7 @@
 
             const dateStr = getDateString(selectedDate);
             const dayStudents = students[dateStr] || [];
-            const slotsRemaining = 6 - dayStudents.length;
+            const slotsRemaining = MAX_STUDENTS - dayStudents.length;
             const dayConfig = availableDays[dateStr];
             const timeLabel = dayConfig && dayConfig.time ? 
                 (dayConfig.time === 'mattina' ? '🌅 Mattina' : '🌆 Pomeriggio') : '';
@@ -920,7 +947,7 @@
                         ${timeLabel ? `<span style="margin-left: 12px; padding: 4px 12px; background: var(--background); border-radius: 20px; font-size: 14px; font-weight: 500; color: var(--primary);">${timeLabel}</span>` : ''}
                     </div>
                     <div class="slots-bar">
-                        ${Array(6).fill(0).map((_, i) => 
+                        ${Array(MAX_STUDENTS).fill(0).map((_, i) => 
                             `<div class="slot-indicator ${i < dayStudents.length ? 'filled' : ''}"></div>`
                         ).join('')}
                     </div>
@@ -962,9 +989,24 @@
                     </div>
                 `;
             } else {
+                // Seduta piena - offri opzione di spostare un allievo
                 html += `
-                    <div class="alert alert-danger">
-                        ⚠️ Questa seduta ha raggiunto il limite massimo di 6 allievi
+                    <div class="alert alert-danger" style="margin-bottom: 16px;">
+                        ⚠️ Questa seduta ha raggiunto il limite massimo di ${MAX_STUDENTS} allievi
+                    </div>
+                    <div class="add-form">
+                        <div class="form-group">
+                            <label class="form-label">Vuoi inserire un nuovo allievo?</label>
+                            <input type="text" id="studentName" class="form-input" 
+                                   placeholder="Es: Mario Rossi" 
+                                   ${pendingStudentName ? `value="${pendingStudentName}"` : ''}>
+                        </div>
+                        <button class="btn btn-warning" onclick="promptMoveStudentToMakeSpace()" style="width: 100%; color: white;">
+                            🔄 Sposta un allievo per fare posto
+                        </button>
+                        <div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary); text-align: center;">
+                            💡 Sposterai un allievo esistente per liberare posto per il nuovo
+                        </div>
                     </div>
                 `;
             }
@@ -989,11 +1031,60 @@
 
             document.getElementById('managementContent').innerHTML = html;
             
-            if (editingIndex !== null) {
-                const student = dayStudents[editingIndex];
-                document.getElementById('studentName').value = student.name;
-                document.getElementById('studentName').focus();
+            if (editingIndex !== null || pendingStudentName) {
+                const input = document.getElementById('studentName');
+                if (editingIndex !== null) {
+                    const student = dayStudents[editingIndex];
+                    input.value = student.name;
+                }
+                input.focus();
             }
+        }
+
+        // Prompt to move a student to make space
+        function promptMoveStudentToMakeSpace() {
+            const nameInput = document.getElementById('studentName');
+            
+            if (!nameInput || !nameInput.value.trim()) {
+                alert('Inserisci prima il nome del nuovo allievo da aggiungere');
+                return;
+            }
+            
+            pendingStudentName = nameInput.value.trim();
+            showSelectStudentModal();
+        }
+
+        // Show modal to select which student to move
+        function showSelectStudentModal() {
+            const dateStr = getDateString(selectedDate);
+            const dayStudents = students[dateStr] || [];
+            
+            const listHtml = dayStudents.map((student, index) => `
+                <div class="student-item" style="cursor: pointer; margin-bottom: 8px;" onclick="selectStudentToMove(${index})">
+                    <div class="student-number">${index + 1}</div>
+                    <div class="student-name">${student.name}</div>
+                    <div style="color: var(--primary); font-weight: 600;">Seleziona →</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('studentSelectList').innerHTML = listHtml;
+            document.getElementById('selectStudentModal').classList.add('active');
+        }
+
+        // Close select student modal
+        function closeSelectStudentModal() {
+            document.getElementById('selectStudentModal').classList.remove('active');
+        }
+
+        // Select a student to move and show destinations
+        function selectStudentToMove(index) {
+            closeSelectStudentModal();
+            
+            const dateStr = getDateString(selectedDate);
+            movingStudents = [students[dateStr][index]];
+            movingSingleIndex = index;
+            
+            showMoveModal();
         }
 
         // Add student
@@ -1017,8 +1108,8 @@
                 };
                 editingIndex = null;
             } else {
-                if (students[dateStr].length >= 6) {
-                    alert('Questa seduta ha già raggiunto il limite massimo di 6 allievi');
+                if (students[dateStr].length >= MAX_STUDENTS) {
+                    alert(`Questa seduta ha già raggiunto il limite massimo di ${MAX_STUDENTS} allievi. Usa "Sposta un allievo per fare posto" per liberare un posto.`);
                     return;
                 }
                 
@@ -1028,6 +1119,7 @@
                 });
             }
             
+            pendingStudentName = null;
             saveData();
             renderCalendar();
             renderManagementPanel();
@@ -1103,14 +1195,14 @@
                     const dayConfig = availableDays[dateStr];
                     const isEnabled = dayConfig && (dayConfig === true || dayConfig.enabled === true);
                     const targetStudents = students[dateStr]?.length || 0;
-                    return isEnabled && (targetStudents + movingStudents.length <= 6);
+                    return isEnabled && (targetStudents + movingStudents.length <= MAX_STUDENTS);
                 })
                 .sort();
             
             sortedDates.forEach(dateStr => {
                 const date = new Date(dateStr + 'T12:00:00');
                 const targetStudents = students[dateStr]?.length || 0;
-                const slotsAvailable = 6 - targetStudents;
+                const slotsAvailable = MAX_STUDENTS - targetStudents;
                 const dayConfig = availableDays[dateStr];
                 const timeLabel = dayConfig && dayConfig.time ? 
                     (dayConfig.time === 'mattina' ? '🌅 Mattina' : '🌆 Pomeriggio') : '';
@@ -1168,12 +1260,26 @@
                 delete students[oldDateStr];
             }
             
+            // If there's a pending student, add them now
+            if (pendingStudentName) {
+                if (!students[oldDateStr]) {
+                    students[oldDateStr] = [];
+                }
+                students[oldDateStr].push({
+                    name: pendingStudentName,
+                    addedAt: new Date().toISOString()
+                });
+                pendingStudentName = null;
+            }
+            
             saveData();
             
-            // Update selected date
-            const [year, month, day] = newDateStr.split('-').map(Number);
-            selectedDate = new Date(year, month - 1, day, 12, 0, 0);
-            currentDate = new Date(year, month - 1, day, 12, 0, 0);
+            // Stay on current date if we added a pending student, otherwise go to new date
+            if (!pendingStudentName) {
+                const [year, month, day] = newDateStr.split('-').map(Number);
+                selectedDate = new Date(year, month - 1, day, 12, 0, 0);
+                currentDate = new Date(year, month - 1, day, 12, 0, 0);
+            }
             
             renderCalendar();
             renderManagementPanel();
@@ -1304,7 +1410,7 @@
                         month: 'long'
                     });
                     
-                    message += `\n${dayName}${timeLabel ? ` - ${timeLabel}` : ''} (${dayStudents.length}/6 posti)\n`;
+                    message += `\n${dayName}${timeLabel ? ` - ${timeLabel}` : ''} (${dayStudents.length}/${MAX_STUDENTS} posti)\n`;
                     
                     dayStudents.forEach((student, index) => {
                         message += `${index + 1}. ${student.name}\n`;
