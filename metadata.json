@@ -1,0 +1,5 @@
+{
+  "name": "Inserimento Esami Guida Andrea",
+  "description": "Applicazione gestionale per la prenotazione delle sedute d'esame di guida, con integrazione WhatsApp.",
+  "requestFramePermissions": []
+}
