@@ -4,7 +4,7 @@ Sistema gestionale per la prenotazione e gestione degli esami di guida.
 
 ## 🌐 Accedi all'App
 
-**👉 [https://autoscuolaaba.github.io/aba-esami-guida/](https://autoscuolaaba.github.io/aba-esami-guida/)**
+**👉 [https://autoscuolaaba.github.io/aba-esami-guida/](https://autoscuolaaba.github.io/aba-esami-guida-2026/)**
 
 ## 📱 Installare come App (PWA)
 
