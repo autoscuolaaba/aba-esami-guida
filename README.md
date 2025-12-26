@@ -26,13 +26,6 @@ Sistema gestionale per la prenotazione e gestione degli esami di guida.
 - 🔔 **Notifiche** - Promemoria automatici esami in arrivo
 - 📱 **WhatsApp** - Invia liste allievi con un tap
 
-## 🔧 Sviluppo Locale
-
-```bash
-npm install
-npm run dev
-```
-
 ## 📄 Licenza
 
 © 2026 ABA Autoscuole Bassano - Cartigliano | Tutti i diritti riservati
