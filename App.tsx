@@ -812,7 +812,6 @@ const App: React.FC = () => {
       {showOnboarding && (
         <OnboardingTutorial
           onComplete={() => setShowOnboarding(false)}
-          onDateSelect={handleDateSelect}
         />
       )}
       </div>

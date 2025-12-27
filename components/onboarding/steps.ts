@@ -2,99 +2,127 @@ export interface OnboardingStepConfig {
   id: string;
   title: string;
   content: string;
-  highlightTarget?: string; // CSS selector or component ID
-  requiresInteraction?: boolean;
-  interactionType?: 'click' | 'select' | 'open-modal' | 'any';
-  interactionHint?: string;
-  illustration?: 'welcome' | 'calendar' | 'limit' | 'turn' | 'examiner' | 'students' | 'booking' | 'exam-day' | 'stats' | 'notifications' | 'complete';
+  illustration?: 'welcome' | 'calendar' | 'limit' | 'turn' | 'examiner' | 'students' | 'booking' | 'exam-day' | 'stats' | 'notifications' | 'complete' | 'whatsapp' | 'backup' | 'summary';
 }
 
 export const onboardingSteps: OnboardingStepConfig[] = [
+  // STEP 1: Welcome
   {
     id: 'welcome',
-    title: 'Benvenuto in Esami di Guida! 🚗',
-    content: 'Questa app ti aiuta a gestire le prenotazioni degli esami guida. Ti guideremo attraverso le funzionalità principali.',
+    title: 'Prenota Esami Guida',
+    content: 'La tua app per gestire gli esami di guida in modo semplice, veloce e professionale.\n\n✓ Importa allievi dalla rubrica\n✓ Prenota con un tap\n✓ Invia tutto via WhatsApp\n✓ Statistiche in tempo reale',
     illustration: 'welcome'
   },
+
+  // STEP 2: Lista Allievi (il più importante)
   {
-    id: 'calendar',
-    title: 'Il Calendario 📅',
-    content: 'Il cuore dell\'app. Qui vedi le sessioni d\'esame programmate.\n\n• I giorni con bordo VERDE hanno esami prenotati\n• Puoi scorrere tra i mesi con swipe o frecce\n• Clicca su un giorno per gestire quella sessione',
-    highlightTarget: '[data-onboarding="calendar"]',
-    requiresInteraction: true,
-    interactionType: 'click',
-    interactionHint: 'Clicca su una data per continuare',
-    illustration: 'calendar'
-  },
-  {
-    id: 'monthly-limit',
-    title: 'Gestisci le Sedute Mensili 📊',
-    content: 'Imposta quante sessioni d\'esame vuoi per ogni mese (2, 3 o 4).\n\nQuando raggiungi il limite, le altre date si disattivano automaticamente.',
-    highlightTarget: '[data-onboarding="monthly-limit"]',
-    requiresInteraction: true,
-    interactionType: 'select',
-    interactionHint: 'Seleziona un numero (2, 3 o 4)',
-    illustration: 'limit'
-  },
-  {
-    id: 'turn-selector',
-    title: 'Mattina o Pomeriggio? ☀️🌙',
-    content: 'Per ogni giorno d\'esame, scegli il turno.\n\n• MATTINA: per esami della mattina ☀️\n• POMERIGGIO: per esami del pomeriggio 🌙',
-    highlightTarget: '[data-onboarding="turn-selector"]',
-    requiresInteraction: true,
-    interactionType: 'select',
-    interactionHint: 'Seleziona Mattina o Pomeriggio',
-    illustration: 'turn'
-  },
-  {
-    id: 'examiner',
-    title: 'Assegna l\'Esaminatore 👤',
-    content: 'Tieni traccia di chi esamina i tuoi allievi.\n\n• Aggiungi esaminatori dalla sezione "Gestisci"\n• Assegnali alle singole sessioni\n• Le statistiche tracciano quanti esami fa ciascuno',
-    highlightTarget: '[data-onboarding="examiner"]',
-    interactionHint: 'Puoi configurare gli esaminatori qui',
-    illustration: 'examiner'
-  },
-  {
-    id: 'waiting-list',
-    title: 'La tua Lista Allievi 📋',
-    content: 'Gestisci gli allievi da prenotare:\n\n• IMPORTA dalla rubrica del telefono\n• AGGIUNGI singolarmente con nome\n• PRENOTA su date disponibili con un tap\n• Chi ha 3 bocciature ha un periodo di attesa',
-    highlightTarget: '[data-onboarding="waiting-list"]',
-    requiresInteraction: true,
-    interactionType: 'open-modal',
-    interactionHint: 'Clicca su Lista Allievi per aprirla',
+    id: 'lista-allievi',
+    title: 'Lista Allievi 💚',
+    content: 'Il pulsante verde è il cuore dell\'app!\n\n📱 IMPORTA dalla rubrica del telefono\n📄 IMPORTA da file vCard (.vcf)\n✏️ AGGIUNGI singoli allievi manualmente\n📅 PRENOTA su date disponibili con un tap\n\nGli allievi importati mantengono il numero di telefono per contattarli facilmente.',
     illustration: 'students'
   },
+
+  // STEP 3: Prenotazione rapida
   {
-    id: 'student-manager',
-    title: 'Prenota gli Allievi 👥',
-    content: 'Dalla Lista Allievi, clicca "Prenota" per assegnare un allievo a una data.\n\nNella sezione allievi di ogni data puoi:\n• Aggiungere manualmente\n• Vedere il numero di telefono\n• Gestire lo stato dell\'esame',
-    highlightTarget: '[data-onboarding="student-manager"]',
+    id: 'prenotazione',
+    title: 'Prenotare un Allievo 📅',
+    content: 'Dalla Lista Allievi, per ogni allievo vedrai il pulsante "Prenota".\n\n1️⃣ Clicca "Prenota"\n2️⃣ Scegli la data dall\'elenco\n3️⃣ Fatto! L\'allievo è prenotato\n\n⚠️ Chi ha 3 bocciature deve attendere 1 mese prima di ripresentarsi (foglio rosa scaduto).',
     illustration: 'booking'
   },
+
+  // STEP 4: Invia in Ufficio (WhatsApp)
+  {
+    id: 'whatsapp',
+    title: 'Invia in Ufficio 📱',
+    content: 'Il pulsante verde WhatsApp invia automaticamente la lista completa all\'ufficio.\n\nIl messaggio include:\n• 📅 Tutte le date degli esami futuri\n• ☀️🌙 Turno (mattina/pomeriggio)\n• 👤 Esaminatore assegnato\n• 👥 Lista allievi per ogni data\n\nNiente più trascrizioni manuali!',
+    illustration: 'whatsapp'
+  },
+
+  // STEP 5: Riepilogo Prenotazioni
+  {
+    id: 'riepilogo',
+    title: 'Riepilogo Prenotazioni 📋',
+    content: 'Il pulsante blu mostra TUTTI gli allievi già prenotati.\n\nPer ogni sessione vedrai:\n• 📆 Data e turno dell\'esame\n• 👤 Esaminatore assegnato\n• 👥 Lista completa degli allievi\n• 📞 Numero di telefono (se disponibile)\n\nPerfetto per avere sempre il quadro completo!',
+    illustration: 'summary'
+  },
+
+  // STEP 6: Calendario
+  {
+    id: 'calendar',
+    title: 'Il Calendario 📆',
+    content: 'Visualizza e gestisci le sessioni d\'esame mese per mese.\n\n🟢 Bordo VERDE = esami prenotati\n👆 Scorri tra i mesi con swipe o frecce\n📅 Clicca su un giorno per gestire la sessione\n\nDal calendario accedi a tutti i dettagli della giornata.',
+    illustration: 'calendar'
+  },
+
+  // STEP 7: Limite Mensile
+  {
+    id: 'monthly-limit',
+    title: 'Limite Sessioni Mensili 🔢',
+    content: 'Imposta quante sessioni d\'esame vuoi per ogni mese.\n\nPuoi scegliere:\n• 2️⃣ sessioni\n• 3️⃣ sessioni\n• 4️⃣ sessioni\n\nQuando raggiungi il limite, le altre date si disattivano automaticamente per evitare overbooking.',
+    illustration: 'limit'
+  },
+
+  // STEP 8: Dettagli Sessione
+  {
+    id: 'session-details',
+    title: 'Dettagli Sessione 📝',
+    content: 'Cliccando su una data nel calendario puoi configurare:\n\n☀️🌙 TURNO - Mattina o Pomeriggio\n👤 ESAMINATORE - Chi esamina quel giorno\n👥 ALLIEVI - Fino a 7 per sessione\n\nPuoi spostare o eliminare intere sessioni con i pulsanti in alto.',
+    illustration: 'turn'
+  },
+
+  // STEP 9: Esaminatore
+  {
+    id: 'examiner',
+    title: 'Gestione Esaminatori 👤',
+    content: 'Tieni traccia di chi esamina i tuoi allievi!\n\n➕ Aggiungi esaminatori dalla sezione "Gestisci"\n✅ Assegna un esaminatore a ogni sessione\n📊 Le statistiche mostrano quante sessioni fa ciascuno\n\nUtile per garantire una rotazione equa!',
+    illustration: 'examiner'
+  },
+
+  // STEP 10: Modalità Esame
   {
     id: 'exam-day',
-    title: 'È il Giorno dell\'Esame! ⚡',
-    content: 'Quando c\'è un esame OGGI, appare il pulsante rosso "MODALITÀ ESAME".\n\n• Schermo ottimizzato per uso rapido\n• Per ogni allievo: PROMOSSO ✓ / BOCCIATO ✗ / ASSENTE ⊘\n• I bocciati vengono riprogrammati automaticamente (+1 mese)\n• 3 bocciature = foglio rosa scaduto',
+    title: 'Modalità Giorno Esame ⚡',
+    content: 'Quando c\'è un esame OGGI, appare il pulsante rosso!\n\nSchermo ottimizzato per uso rapido:\n✅ PROMOSSO - L\'allievo passa\n❌ BOCCIATO - Riprogramma automatico (+1 mese)\n⊘ ASSENTE - Riprogramma senza contare bocciatura\n\n3 bocciature = foglio rosa scaduto → lista d\'attesa.',
     illustration: 'exam-day'
   },
+
+  // STEP 11: Statistiche
   {
-    id: 'stats-backup',
-    title: 'Statistiche e Sicurezza 📊💾',
-    content: 'STATISTICHE:\n• Percentuale promozioni/bocciature\n• Trend ultimi 6 mesi con grafico\n• Classifica esaminatori per anno\n\nBACKUP:\n• Download locale o Google Drive\n• Reminder automatico ogni 7 giorni',
-    highlightTarget: '[data-onboarding="utility-buttons"]',
+    id: 'stats',
+    title: 'Statistiche 📊',
+    content: 'Monitora le performance della tua autoscuola!\n\n📈 Percentuale promozioni/bocciature\n📉 Grafico trend ultimi 6 mesi\n🏆 Classifica esaminatori per anno\n👥 Totale allievi gestiti\n\nDati utili per migliorare continuamente.',
     illustration: 'stats'
   },
+
+  // STEP 12: Backup
+  {
+    id: 'backup',
+    title: 'Backup e Sicurezza 💾',
+    content: 'Non perdere mai i tuoi dati!\n\n💾 Download locale del file JSON\n☁️ Salvataggio su Google Drive\n🔄 Backup automatico ogni 7 giorni\n📥 Importa da file precedente\n\n⏰ L\'app ti avvisa quando è ora di fare backup!',
+    illustration: 'backup'
+  },
+
+  // STEP 13: Notifiche
   {
     id: 'notifications',
-    title: 'Resta Sempre Aggiornato 🔔📱',
-    content: 'NOTIFICHE:\n• Attivale per ricevere promemoria sugli esami\n• Funzionano anche su iPhone (installa come app)\n\nWHATSAPP:\n• Invia la lista allievi prenotati direttamente\n• Contatta singoli allievi per conferme',
-    highlightTarget: '[data-onboarding="notifications"]',
+    title: 'Notifiche Push 🔔',
+    content: 'Ricevi promemoria automatici sugli esami!\n\n🔔 Attiva le notifiche dal pulsante campanella\n📱 Funzionano anche su iPhone (installa come app)\n📅 Promemoria il giorno prima dell\'esame\n\n💡 Su iPhone: usa "Aggiungi a Home" da Safari.',
     illustration: 'notifications'
   },
+
+  // STEP 14: Help
+  {
+    id: 'help',
+    title: 'Rivedi il Tutorial ❓',
+    content: 'Hai bisogno di rivedere questa guida?\n\nClicca il pulsante ❓ nell\'header in alto a destra per riavviare il tutorial in qualsiasi momento.\n\n💾 I tuoi dati rimangono sempre salvati sul dispositivo.',
+    illustration: 'complete'
+  },
+
+  // STEP 15: Complete
   {
     id: 'complete',
     title: 'Sei Pronto! 🎉',
-    content: 'Ora conosci tutte le funzionalità.\n\nPuoi rivedere questo tutorial in qualsiasi momento cliccando sul pulsante "?" nell\'header.\n\nIn bocca al lupo con i tuoi allievi!',
+    content: 'Complimenti! Ora conosci tutte le funzionalità.\n\n📝 Ricorda:\n• Lista Allievi per importare e prenotare\n• Calendario per gestire le sessioni\n• Modalità Esame il giorno degli esami\n• Backup regolari per sicurezza\n\nIn bocca al lupo con i tuoi allievi! 🍀',
     illustration: 'complete'
   }
 ];
