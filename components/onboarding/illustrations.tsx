@@ -1,5 +1,5 @@
 import React from 'react';
-import { Car, Calendar, Hash, Sun, Moon, User, ClipboardList, Users, Zap, BarChart3, Bell, PartyPopper, Download, Upload, Send } from 'lucide-react';
+import { Calendar, Hash, Sun, Moon, User, ClipboardList, Users, Zap, BarChart3, Bell, PartyPopper, Download, Upload, Send } from 'lucide-react';
 
 interface IllustrationProps {
   className?: string;
@@ -7,26 +7,21 @@ interface IllustrationProps {
 
 export const WelcomeIllustration: React.FC<IllustrationProps> = ({ className }) => (
   <div className={`flex flex-col items-center justify-center ${className}`}>
-    {/* Main logo container */}
-    <div className="relative mb-4">
-      {/* Outer glow ring */}
-      <div className="absolute inset-0 w-32 h-32 rounded-full bg-gradient-to-br from-[#006D40] to-[#00B067] opacity-20 animate-ping"></div>
-      {/* Middle ring */}
-      <div className="absolute inset-2 w-28 h-28 rounded-full bg-gradient-to-br from-[#006D40]/30 to-[#00B067]/30 animate-pulse"></div>
-      {/* Main circle */}
-      <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-[#006D40] to-[#00B067] flex items-center justify-center shadow-2xl shadow-green-500/40">
-        <Car size={56} className="text-white drop-shadow-lg" />
+    {/* ABA Logo */}
+    <div className="relative">
+      {/* Main logo */}
+      <div className="relative text-center py-4">
+        <div className="relative inline-block mb-1">
+          <span className="text-7xl font-black tracking-tighter text-gray-900" style={{ fontFamily: "'Arial Black', Arial, sans-serif" }}>
+            ABA
+          </span>
+          {/* Red underline */}
+          <div className="absolute bottom-3 left-[-10%] right-[-10%] h-2 bg-red-600 -skew-x-12 -z-10"></div>
+        </div>
+        <div className="text-base font-light tracking-[0.3em] text-gray-900 -mt-1 text-center pl-[0.3em]">
+          AUTOSCUOLE
+        </div>
       </div>
-      {/* Floating elements */}
-      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg animate-bounce">
-        <span className="text-white text-xl font-black">!</span>
-      </div>
-      <div className="absolute -bottom-2 -left-2 text-3xl animate-bounce" style={{ animationDelay: '0.3s' }}>🎯</div>
-      <div className="absolute top-1/2 -right-6 text-2xl animate-bounce" style={{ animationDelay: '0.5s' }}>✨</div>
-    </div>
-    {/* Brand badge */}
-    <div className="mt-2 px-4 py-1.5 bg-gradient-to-r from-[#006D40] to-[#00B067] rounded-full shadow-lg">
-      <span className="text-white text-xs font-bold tracking-wider">AUTOSCUOLA ABA</span>
     </div>
   </div>
 );
